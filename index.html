@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกประวัติศาสตร์: การศึกและข้อพิพาท ไทย-กัมพูชา</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prata&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --surface: #1a1d24;
+            --primary: #c23b22; /* สีแดงเข้ม สื่อถึงสงคราม/ประวัติศาสตร์ */
+            --text-main: #e0e4cc;
+            --text-muted: #8b92a5;
+            --gold: #d4af37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ---------------- Navigation Sidebar ---------------- */
+        nav {
+            width: 280px;
+            background-color: var(--surface);
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .nav-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 1rem;
+        }
+
+        .nav-header h1 {
+            font-family: 'Prata', serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            line-height: 1.3;
+        }
+
+        .nav-header p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-links li {
+            width: 100%;
+        }
+
+        .nav-links button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 1rem 2rem;
+            text-align: left;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links button:hover {
+            color: var(--text-main);
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        .nav-links button.active {
+            color: var(--gold);
+            border-left-color: var(--primary);
+            background-color: rgba(194, 59, 34, 0.1);
+            font-weight: 600;
+        }
+
+        /* ---------------- Main Content Area ---------------- */
+        main {
+            margin-left: 280px;
+            flex: 1;
+            position: relative;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 4rem;
+            display: none;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            display: block;
+        }
+
+        /* ---------------- Custom Layouts (No standard cards) ---------------- */
+        
+        /* Intro Concept Layout */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            height: calc(100vh - 8rem);
+        }
+
+        .intro-text h2 {
+            font-family: 'Prata', serif;
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .intro-text p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #b0b5c9;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-family: 'Sarabun', sans-serif;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            border-radius: 2px;
+        }
+
+        .btn-primary:hover {
+            background-color: #a32e19;
+            transform: translateY(-2px);
+        }
+
+        .image-frame {
+            position: relative;
+            padding: 1rem;
+            background: var(--surface);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: sepia(0.4) brightness(0.8) contrast(1.2);
+            transition: filter 0.5s ease;
+        }
+
+        .image-frame:hover img {
+            filter: sepia(0) brightness(1) contrast(1);
+        }
+
+        /* Dossier Layout (For History Eras) */
+        .dossier-layout {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .era-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .era-header h2 {
+            font-family: 'Prata', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+        }
+
+        .timeline-event {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: 200px;
+            top: 0;
+            bottom: -4rem;
+            width: 1px;
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .event-year {
+            font-family: 'Prata', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-align: right;
+            padding-top: 5px;
+        }
+
+        .event-content {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-left: 3px solid var(--gold);
+            position: relative;
+        }
+
+        .event-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .event-content p, .event-content li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #b0b5c9;
+            margin-bottom: 1rem;
+        }
+
+        .event-content ul {
+            margin-left: 1.5rem;
+        }
+
+        .event-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Data Table */
+        .conflict-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            font-size: 1rem;
+        }
+
+        .conflict-table th, .conflict-table td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .conflict-table th {
+            background-color: rgba(194, 59, 34, 0.1);
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* ---------------- Responsive ---------------- */
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 2rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            }
+            .nav-header {
+                padding: 0;
+                border: none;
+                margin: 0;
+            }
+            .nav-header p { display: none; }
+            .nav-links {
+                flex-direction: row;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 0.5rem;
+            }
+            .nav-links button {
+                width: auto;
+                padding: 0.5rem 1rem;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .nav-links button.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary);
+            }
+            main {
+                margin-left: 0;
+            }
+            .page {
+                padding: 2rem 1rem;
+            }
+            .intro-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 2rem;
+            }
+            .timeline-event {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .timeline-event::before { display: none; }
+            .event-year {
+                text-align: left;
+                font-size: 1.5rem;
+            }
+            .conflict-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-header">
+            <h1>พงศาวดารศึก<br>ไทย - กัมพูชา</h1>
+            <p>Historical Dossier</p>
+        </div>
+        <ul class="nav-links">
+            <li><button data-target="home" class="active">บทนำ</button></li>
+            <li><button data-target="era1">ยุคโบราณ-อยุธยา</button></li>
+            <li><button data-target="era2">ยุคธนบุรี-ต้นรัตนโกสินทร์</button></li>
+            <li><button data-target="era3">ยุคจักรวรรดินิยม-เขตแดน</button></li>
+            <li><button data-target="era4">ยุคสงครามเย็น-ปัจจุบัน</button></li>
+            <li><button data-target="refs">แหล่งอ้างอิง</button></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Page: Home -->
+        <section id="home" class="page active">
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <h2>รอยร้าวและรอยต่อ <br>เหนือแผ่นดินอุษาคเนย์</h2>
+                    <p>สำรวจประวัติศาสตร์การศึกสงคราม ความขัดแย้ง และข้อพิพาททางดินแดนระหว่าง "ไทยและกัมพูชา" ตั้งแต่ยุคอาณาจักรโบราณ การแผ่อิทธิพลของตะวันตก จนถึงวิกฤตการณ์ชายแดนในยุคปัจจุบัน ผ่านบันทึกประวัติศาสตร์และการวิเคราะห์ทางภูมิรัฐศาสตร์</p>
+                    <button class="btn-primary" onclick="switchPage('era1')">เริ่มการสำรวจ</button>
+                </div>
+                <div class="image-frame">
+                    <!-- รูปภาพแผนที่โบราณสยาม-กัมพูชา -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Map_of_Siam_and_Cambodia_%281828%29.jpg/1024px-Map_of_Siam_and_Cambodia_%281828%29.jpg" alt="แผนที่โบราณสยามและกัมพูชา">
+                </div>
+            </div>
+        </section>
+
+        <!-- Page: Era 1 -->
+        <section id="era1" class="page">
+            <div class="dossier-layout">
+                <div class="era-header">
+                    <h2>ยุคอาณาจักรโบราณ และสมัยอยุธยา</h2>
+                    <p style="color: var(--text-muted);">พ.ศ. 1893 – 2310 | การสร้างความเข้มแข็งและการหลุดพ้นอิทธิพลขอม</p>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 1896<br>- 1974</div>
+                    <div class="event-content">
+                        <h3>การล่มสลายของนครธม</h3>
+                        <p>อยุธยาตั้งตนเป็นศูนย์กลางอำนาจใหม่ และต้องการแผ่อิทธิพลเข้าสู่ลุ่มแม่น้ำโขงตอนล่าง นำไปสู่การเข้าตีนครธมถึง 3 ครั้ง</p>
+                        <ul>
+                            <li><strong>ครั้งที่ 1 (1896):</strong> พระเจ้าอู่ทองโปรดให้สมเด็จพระราเมศวรยกทัพไปตี แต่ต้องให้ขุนหลวงพะงั่วยกทัพเสริมจึงสำเร็จ</li>
+                            <li><strong>ครั้งที่ 3 (1974):</strong> สมเด็จพระบรมราชาธิราชที่ 2 (สามพระยา) ยึดเมืองนครธมได้ 7 เดือน ส่งผลให้ศูนย์กลางอำนาจเขมรต้องย้ายลงใต้ ยุคเมืองพระนครจึงสิ้นสุดลง</li>
+                        </ul>
+                        <!-- ภาพอุทยานประวัติศาสตร์อยุธยา -->
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ayutthaya_historical_park_-_Wat_Phra_Sri_Sanphet_02.jpg/1024px-Ayutthaya_historical_park_-_Wat_Phra_Sri_Sanphet_02.jpg" alt="อุทยานประวัติศาสตร์อยุธยา" class="event-image">
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 2136<br>- 2137</div>
+                    <div class="event-content">
+                        <h3>ศึกตีเมืองละแวก</h3>
+                        <p>กัมพูชาตั้งราชธานีที่ "เมืองละแวก" และมักยกทัพมาตีชายแดนสยามขณะติดพันศึกกับพม่า หลังสมเด็จพระนเรศวรมหาราชทรงทำยุทธหัตถีชนะ ได้ทรงนำทัพหลวงกวาดล้างอิทธิพลเขมรที่ละแวกเพื่อความมั่นคงทางตะวันออก และเข้ายึดเมืองได้สำเร็จ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page: Era 2 -->
+        <section id="era2" class="page">
+            <div class="dossier-layout">
+                <div class="era-header">
+                    <h2>ยุคธนบุรีและรัตนโกสินทร์ตอนต้น</h2>
+                    <p style="color: var(--text-muted);">พ.ศ. 2310 – 2394 | การกอบกู้อิทธิพลและสงครามตัวแทน</p>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 2314</div>
+                    <div class="event-content">
+                        <h3>การจัดระเบียบหลังเสียกรุงฯ</h3>
+                        <p>สมเด็จพระเจ้าตากสินมหาราช โปรดเกล้าฯ ให้เจ้าพระยาจักรี ยกทัพไปจัดระเบียบการปกครองในกัมพูชา เพื่อสถาปนาสมเด็จพระรามราชา (นักองค์นน) ถือเป็นการดึงกัมพูชากลับมาสู่วงอำนาจสยาม</p>
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 2376<br>- 2390</div>
+                    <div class="event-content">
+                        <h3>อานามสยามยุทธ (มหาสงคราม 14 ปี)</h3>
+                        <p>สงครามมหาอำนาจภูมิภาคระหว่าง สยาม (ร.3) กับ เวียดนาม (มินห์หม่าง) เพื่อแย่งชิงอิทธิพลเหนือกัมพูชา ภายใต้การนำทัพของเจ้าพระยาบดินทรเดชา (สิงห์ สิงหเสนี)</p>
+                        <p><strong>ผลลัพธ์:</strong> สู้รบยาวนานจนทำสัญญาประนีประนอม ยอมให้กัมพูชาส่งบรรณาการให้ทั้งสองฝ่าย (Dual Suzerainty)</p>
+                        <!-- ภาพทหารสยามโบราณ -->
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Siam_troops_1893.jpg/800px-Siam_troops_1893.jpg" alt="ทหารสยาม" class="event-image">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page: Era 3 -->
+        <section id="era3" class="page">
+            <div class="dossier-layout">
+                <div class="era-header">
+                    <h2>ยุคจักรวรรดินิยมและการปักป้ายเขตแดน</h2>
+                    <p style="color: var(--text-muted);">พ.ศ. 2406 – 2497 | ภัยคุกคามจากตะวันตกและสนธิสัญญา</p>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 2410<br>& 2449</div>
+                    <div class="event-content">
+                        <h3>สนธิสัญญาสยาม–ฝรั่งเศส</h3>
+                        <ul>
+                            <li><strong>ค.ศ. 1867:</strong> สยามสละสิทธิราชานุภาพเหนือกัมพูชาให้ฝรั่งเศส แต่คงอำนาจเหนือ พระตระบอง เสียมราฐ ศรีโสภณ</li>
+                            <li><strong>ค.ศ. 1907:</strong> สยามจำต้องยอมยก 3 เมืองดังกล่าวให้ฝรั่งเศส แลกกับตราด ด่านซ้าย และสิทธิสภาพนอกอาณาเขต</li>
+                        </ul>
+                        <p style="color:var(--primary); font-weight:bold;">*จุดนี้คือต้นกำเนิดการจัดทำ "แผนที่ภาคสืบเนื่อง 1 (Annex I)" ซึ่งเป็นชนวนคดีพระวิหารในเวลาต่อมา</p>
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 2483</div>
+                    <div class="event-content">
+                        <h3>กรณีพิพาทอินโดจีน</h3>
+                        <p>ไทยสู้รบกับฝรั่งเศส ญี่ปุ่นเข้ามาไกล่เกลี่ย ไทยได้ 4 จังหวัดคืนมา (พระตระบอง, พิบูลสงคราม, นครจัมปาศักดิ์, ลานช้าง) แต่ต้องคืนกลับไปทั้งหมดหลังสงครามโลกครั้งที่ 2 สิ้นสุดเพื่อแลกกับการเข้าเป็นสมาชิก UN</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page: Era 4 -->
+        <section id="era4" class="page">
+            <div class="dossier-layout">
+                <div class="era-header">
+                    <h2>ยุคสงครามเย็นและวิกฤตการณ์สมัยใหม่</h2>
+                    <p style="color: var(--text-muted);">พ.ศ. 2498 – 2556 | คดีศาลโลกและข้อพิพาทชายแดน</p>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">พ.ศ. 2505</div>
+                    <div class="event-content">
+                        <h3>คดีปราสาทพระวิหาร (ICJ 1962)</h3>
+                        <p>ศาลโลกตัดสิน 9:3 ให้ตัวปราสาทอยู่ในอธิปไตยกัมพูชา โดยอ้างอิงหลัก "การทักท้วงยินยอมโดยปริยาย" (Estoppel) จากแผนที่ Annex I ที่ไทยไม่ได้คัดค้านในอดีต</p>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Preah_vihear_temple_03.jpg/1024px-Preah_vihear_temple_03.jpg" alt="ปราสาทพระวิหาร" class="event-image">
+                    </div>
+                </div>
+
+                <div class="timeline-event">
+                    <div class="event-year">2551 - 2554</div>
+                    <div class="event-content">
+                        <h3>วิกฤตการณ์ชายแดนร่วมสมัย</h3>
+                        <p>การปะทะด้วยกำลังทหารและการใช้อาวุธหนักบริเวณชายแดนสืบเนื่องจากการขึ้นทะเบียนมรดกโลก</p>
+                        <table class="conflict-table">
+                            <tr>
+                                <th>ช่วงเวลา</th>
+                                <th>พื้นที่ปะทะ</th>
+                                <th>เหตุการณ์สำคัญ</th>
+                            </tr>
+                            <tr>
+                                <td>ก.ค. 2551</td>
+                                <td>พื้นที่ 4.6 ตร.กม. พระวิหาร</td>
+                                <td>กัมพูชาขึ้นทะเบียนมรดกโลกเดี่ยว, ตรึงกำลังทหาร</td>
+                            </tr>
+                            <tr>
+                                <td>ก.พ. 2554</td>
+                                <td>ผามออีแดง, ภูม้าเขือ</td>
+                                <td>ปะทะด้วยอาวุธหนัก อพยพประชาชนนับหมื่น</td>
+                            </tr>
+                            <tr>
+                                <td>เม.ย. 2554</td>
+                                <td>ตาเมือนธม, ตาควาย (สุรินทร์)</td>
+                                <td>ขยายแนวปะทะ สูญเสียกำลังพลทั้งสองฝ่าย</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <p><strong>พ.ศ. 2556:</strong> ศาลโลกตีความคดีใหม่ ยืนยันกัมพูชามีอธิปไตยเหนือ "ยอดเขาพระวิหาร" แต่ไม่ได้กำหนดเส้นเขตแดนทั่วไปในพื้นที่ทับซ้อน ให้ทั้งสองฝ่ายเจรจาร่วมมือกัน</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page: References -->
+        <section id="refs" class="page">
+            <div class="dossier-layout">
+                <div class="era-header">
+                    <h2>แหล่งอ้างอิงและบรรณานุกรม</h2>
+                    <p style="color: var(--text-muted);">ข้อมูลสำหรับการศึกษาและค้นคว้าเพิ่มเติม</p>
+                </div>
+                
+                <div class="event-content">
+                    <h3>เอกสารประวัติศาสตร์และงานวิจัยไทย</h3>
+                    <ul>
+                        <li>กรมศิลปากร. (2512). <em>พระราชพงศาวดารกรุงศรีอยุธยา ฉบับพันจันทนุมาศ (ทอง).</em> โรงพิมพ์การศาสนา.</li>
+                        <li>ขจร สุขพานิช. (2530). <em>ข้อมูลประวัติศาสตร์สมัยอยุธยา.</em> สำนักพิมพ์ธรรมศาสตร์.</li>
+                        <li>ถนอม อานามวัฒน์ และคณะ. (2528). <em>ประวัติศาสตร์ไทย: ตั้งแต่สมัยเริ่มแรกจนถึงสิ้นรัชกาลที่ 5.</em></li>
+                    </ul>
+                    
+                    <h3 style="margin-top:2rem;">กฎหมายและข้อพิพาทระหว่างประเทศ</h3>
+                    <ul>
+                        <li>International Court of Justice (ICJ). (1962). <em>Case Concerning the Temple of Preah Vihear.</em></li>
+                        <li>International Court of Justice (ICJ). (2013). <em>Request for Interpretation of the Judgment of 15 June 1962.</em></li>
+                    </ul>
+
+                    <h3 style="margin-top:2rem;">สื่อเรียนรู้เพิ่มเติม</h3>
+                    <p>วิดีโอสารคดี: <a href="https://www.youtube.com/watch?v=B5u_XvYrwPM" target="_blank" style="color:var(--primary);">สงครามไทยรบเขมรในสมัยอยุธยา (YouTube)</a></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript for SPA Routing -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-links button');
+            const pages = document.querySelectorAll('.page');
+
+            // Function to switch page
+            window.switchPage = function(targetId) {
+                // Update Buttons
+                navButtons.forEach(btn => {
+                    if(btn.getAttribute('data-target') === targetId) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // Update Pages (Fade out old, fade in new)
+                pages.forEach(page => {
+                    if (page.id === targetId) {
+                        page.classList.add('active');
+                        // Reset scroll to top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        page.classList.remove('active');
+                    }
+                });
+            }
+
+            // Add Event Listeners to Nav Buttons
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = e.target.getAttribute('data-target');
+                    switchPage(targetId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
